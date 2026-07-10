@@ -271,13 +271,6 @@ fprintf('RMSE            = %.3f mm/day\n', testMetrics.RMSE);
 fprintf('PBias           = %.3f %%\n', testMetrics.PBias);
 fprintf('KGE             = %.3f\n', testMetrics.KGE);
 
-%%Save output
-
-save('Scenario1_CNN_BiLSTM_MME_Output.mat', ...
-    'trainMetrics', 'testMetrics', ...
-    'YTrain', 'YTest', ...
-    'YPredTrain', 'YPredTest');
-
 
 %% ================= PLOTS =====================================
 
