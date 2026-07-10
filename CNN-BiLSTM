@@ -129,7 +129,6 @@ fprintf('\nChronological split applied:\n');
 fprintf('Training samples = %d\n', numel(YTrain));
 fprintf('Testing samples  = %d\n', numel(YTest));
 
-
 %% ================= NORMALIZATION =============================
 
 % Compute normalization parameters from training data only
