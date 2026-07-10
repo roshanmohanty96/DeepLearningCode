@@ -4,8 +4,6 @@
 %% ============================================================
 
 clc; clear; close all;
-
-
 excelFile = 'GCM data.xlsx';
 
 %% ================= SCENARIO-2 SETTINGS =======================
@@ -190,12 +188,9 @@ end
 YTrainN = (YTrain - muY) ./ sigY;
 
 %% ================= CNN-BiLSTM ARCHITECTURE ===================
-
 % Scenario-2 settings:
-% Kernel size = 2
-% Dropout = 0.20
-% Three learnable blocks are used:
-% Conv layer 1 + Conv layer 2 + BiLSTM
+
+poolingSize = 1;
 
 layers = [
     sequenceInputLayer(numGCM, "Name", "input")
@@ -204,6 +199,10 @@ layers = [
         "Padding", "same", ...
         "Name", "conv1")
     reluLayer("Name", "relu1")
+
+    maxPooling1dLayer(poolingSize, ...
+        "Stride", 1, ...
+        "Name", "pool1")
 
     convolution1dLayer(kernelSize, 32, ...
         "Padding", "same", ...
@@ -219,7 +218,6 @@ layers = [
     fullyConnectedLayer(1, "Name", "fc_out")
     regressionLayer("Name", "regression")
 ];
-
 %% ================= TRAINING OPTIONS ==========================
 
 options = trainingOptions("adam", ...
