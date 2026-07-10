@@ -1,8 +1,8 @@
 %% ============================================================
 % CNN-BiLSTM Multi-Model Ensemble using selected CMIP6-GCMs
+% Entire historical period (1970-2014)
 % Sample grid: Longitude = 82.625, Latitude = 21.875
 %% ============================================================
-
 clc; clear; close all;
 
 excelFile = 'GCM data.xlsx';
@@ -15,7 +15,7 @@ numHiddenUnits   = 12;
 dropoutRate      = 0.10;
 maxEpochs        = 150;
 miniBatchSize    = 128;
-initialLearnRate = 0.005;
+initialLearnRate = 0.001;
 
 rng(42);
 
@@ -82,18 +82,6 @@ numGCM = size(X,2);
 
 fprintf('Number of selected GCMs used = %d\n', numGCM);
 
-%% ================= REMOVE MISSING VALUES =====================
-
-validIdx = ~isnat(dates) & all(~isnan(X),2) & ~isnan(Y);
-
-dates = dates(validIdx);
-X = X(validIdx,:);
-Y = Y(validIdx);
-
-fprintf('\nData loaded successfully.\n');
-fprintf('Grid location: Longitude = %.3f, Latitude = %.3f\n', gridLon, gridLat);
-fprintf('Total valid daily records = %d\n', length(Y));
-
 
 % Look-back window for temporal learning
 lookBack = 3;
@@ -120,8 +108,6 @@ for i = lookBack:length(Y)
 
 end
 
-fprintf('Total sequence samples after look-back = %d\n', numel(YSeq));
-
 %% ================= 75% TRAINING AND 25% TESTING ==============
 
 numSamples = numel(YSeq);
@@ -142,6 +128,7 @@ dateTest  = dateSeq(idxTest);
 fprintf('\nChronological split applied:\n');
 fprintf('Training samples = %d\n', numel(YTrain));
 fprintf('Testing samples  = %d\n', numel(YTest));
+
 
 %% ================= NORMALIZATION =============================
 
@@ -233,6 +220,7 @@ YPredTest  = YPredTestN  .* sigY + muY;
 % Rainfall cannot be negative
 YPredTrain(YPredTrain < 0) = 0;
 YPredTest(YPredTest < 0)   = 0;
+
 
 %% ================= PERFORMANCE METRICS =======================
 
