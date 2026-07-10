@@ -1,23 +1,26 @@
 %% ============================================================
 % CNN-BiLSTM Multi-Model Ensemble using selected CMIP6-GCMs
-% Entire historical period (1970-2014)
+% Sceario-1: Entire historical period (1970-2014)
 % Sample grid: Longitude = 82.625, Latitude = 21.875
 %% ============================================================
 clc; clear; close all;
 
 excelFile = 'GCM data.xlsx';
 
-% Training-testing split
+%% ================= SCENARIO-1 CNN-BiLSTM HYPERPARAMETERS =================
+
 trainRatio = 0.75;
 
-% CNN-BiLSTM hyperparameters
-numHiddenUnits   = 12;
-dropoutRate      = 0.10;
-maxEpochs        = 150;
-miniBatchSize    = 128;
-initialLearnRate = 0.001;
+% CNN-BiLSTM hyperparameters for Scenario-1
+kernelSize       = 4;       
+poolingSize      = 2;       
+dropoutRate      = 0.25;    
+maxEpochs        = 150;     
+miniBatchSize    = 128;      
+initialLearnRate = 0.005;  
 
-rng(42);
+% Keep moderate value for stable training.
+numHiddenUnits   = 12;
 
 %% ================= LOAD EXCEL DATA ===========================
 
@@ -84,7 +87,7 @@ fprintf('Number of selected GCMs used = %d\n', numGCM);
 
 
 % Look-back window for temporal learning
-lookBack = 3;
+lookBack = 7;
 %% ================= CREATE TEMPORAL SEQUENCES =================
 
 % Each sample uses previous lookBack days of selected GCM rainfall
@@ -162,13 +165,18 @@ YTrainN = (YTrain - muY) ./ sigY;
 layers = [
     sequenceInputLayer(numGCM, "Name", "input")
 
-    convolution1dLayer(3, 32, ...
+    convolution1dLayer(kernelSize, 32, ...
         "Padding", "same", ...
         "Name", "conv1")
     batchNormalizationLayer("Name", "bn1")
     reluLayer("Name", "relu1")
 
-    convolution1dLayer(3, 64, ...
+    maxPooling1dLayer(poolingSize, ...
+        "Stride", 1, ...
+        "Padding", "same", ...
+        "Name", "pool1")
+
+    convolution1dLayer(kernelSize, 64, ...
         "Padding", "same", ...
         "Name", "conv2")
     batchNormalizationLayer("Name", "bn2")
