@@ -4,12 +4,12 @@
 %% ============================================================
 
 clc; clear; close all;
+
+
 excelFile = 'GCM data.xlsx';
 
-gridLon = 82.625;
-gridLat = 21.875;
-
 %% ================= SCENARIO-2 SETTINGS =======================
+
 % Monsoon season: June to October
 monsoonMonths = 6:10;
 
@@ -270,6 +270,14 @@ fprintf('Correlation (r) = %.3f\n', testMetrics.r);
 fprintf('RMSE            = %.3f mm/day\n', testMetrics.RMSE);
 fprintf('PBias           = %.3f %%\n', testMetrics.PBias);
 fprintf('KGE             = %.3f\n', testMetrics.KGE);
+
+%%Save output
+
+save('Scenario1_CNN_BiLSTM_MME_Output.mat', ...
+    'trainMetrics', 'testMetrics', ...
+    'YTrain', 'YTest', ...
+    'YPredTrain', 'YPredTest');
+
 
 %% ================= PLOTS =====================================
 
