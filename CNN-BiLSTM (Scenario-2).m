@@ -4,15 +4,12 @@
 %% ============================================================
 
 clc; clear; close all;
-
-
 excelFile = 'GCM data.xlsx';
 
 gridLon = 82.625;
 gridLat = 21.875;
 
 %% ================= SCENARIO-2 SETTINGS =======================
-
 % Monsoon season: June to October
 monsoonMonths = 6:10;
 
